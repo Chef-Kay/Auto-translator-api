@@ -1,16 +1,17 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Header, Request
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
 
-# Load environment variables from .env
+# Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client
+# Init OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+internal_api_key = os.getenv("INTERNAL_API_KEY")
 
-# Initialize FastAPI app
+# Init FastAPI app
 app = FastAPI(
     title="Auto Translator API",
     docs_url=None,
@@ -18,22 +19,20 @@ app = FastAPI(
     openapi_url=None
 )
 
-# Request body model
+# Request model
 class TranslateRequest(BaseModel):
     text: str
     from_lang: str = "en"
     to_lang: str = "zh"
 
-# Home route
 @app.get("/")
 def root():
     return {
         "message": "👋 Welcome to Auto Translator API. Use /translate_free or /translate_pro to translate text.",
-        "docs": "/docs",
+        "docs": "/docs (disabled in production)",
         "health": "/health"
     }
 
-# Health check route
 @app.get("/health")
 def health_check():
     try:
@@ -74,10 +73,20 @@ def perform_translation(req: TranslateRequest, model: str):
 
 # Free version (GPT-3.5)
 @app.post("/translate_free")
-async def translate_free(req: TranslateRequest):
+async def translate_free(
+    req: TranslateRequest,
+    x_internal_api_key: str = Header(default=None)
+):
+    if x_internal_api_key != internal_api_key:
+        raise HTTPException(status_code=403, detail="Forbidden: Invalid API Key")
     return perform_translation(req, model="gpt-3.5-turbo")
 
 # Pro version (GPT-4o)
 @app.post("/translate_pro")
-async def translate_pro(req: TranslateRequest):
+async def translate_pro(
+    req: TranslateRequest,
+    x_internal_api_key: str = Header(default=None)
+):
+    if x_internal_api_key != internal_api_key:
+        raise HTTPException(status_code=403, detail="Forbidden: Invalid API Key")
     return perform_translation(req, model="gpt-4o")
