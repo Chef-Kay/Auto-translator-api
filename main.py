@@ -75,6 +75,10 @@ async def translate_pro(req: TranslateRequest):
 # RapidAPI authentication middleware
 class RapidAPIAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+
+        if request.url.path in ["/", "/health"]:
+            return await call_next(request)
+         
         expected = os.getenv("RAPIDAPI_SECRET")
         actual = request.headers.get("X-RapidAPI-Proxy-Secret")
         if actual != expected:
