@@ -2,11 +2,11 @@ from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
-import openai
+from openai import OpenAI
 
 load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI(title="Auto Translator API")
 
@@ -20,7 +20,7 @@ async def translate(req: TranslateRequest):
     prompt = f"Translate this text from {req.from_lang} to {req.to_lang}:\n{req.text}"
     
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "user", "content": prompt}
