@@ -11,7 +11,12 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Initialize FastAPI app
-app = FastAPI(title="Auto Translator API")
+app = FastAPI(
+    title="Auto Translator API",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None
+)
 
 # Request body model
 class TranslateRequest(BaseModel):
