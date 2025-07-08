@@ -1,6 +1,8 @@
-from fastapi import FastAPI, HTTPException, Header, Request
+from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 import os
 from openai import OpenAI
 
@@ -9,9 +11,8 @@ load_dotenv()
 
 # Init OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-internal_api_key = os.getenv("INTERNAL_API_KEY")
 
-# Init FastAPI app
+# Init FastAPI app (Swagger disabled for security)
 app = FastAPI(
     title="Auto Translator API",
     docs_url=None,
@@ -24,30 +25,6 @@ class TranslateRequest(BaseModel):
     text: str
     from_lang: str = "en"
     to_lang: str = "zh"
-
-@app.get("/")
-def root():
-    return {
-        "message": "👋 Welcome to Auto Translator API. Use /translate_free or /translate_pro to translate text.",
-        "docs": "/docs (disabled in production)",
-        "health": "/health"
-    }
-
-@app.get("/health")
-def health_check():
-    try:
-        models = client.models.list()
-        return {
-            "status": "ok",
-            "openai": "available",
-            "model_count": len(models.data)
-        }
-    except Exception as e:
-        return {
-            "status": "error",
-            "openai": "unavailable",
-            "detail": str(e)
-        }
 
 # Shared translation logic
 def perform_translation(req: TranslateRequest, model: str):
@@ -71,22 +48,38 @@ def perform_translation(req: TranslateRequest, model: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Free version (GPT-3.5)
+# Health check
+@app.get("/health")
+def health_check():
+    try:
+        client.models.list()
+        return {"status": "ok", "openai": "available"}
+    except Exception as e:
+        return {"status": "error", "openai": "unavailable", "detail": str(e)}
+
+# Welcome
+@app.get("/")
+def root():
+    return {"message": "Welcome to Auto Translator API"}
+
+# Free version using GPT-3.5
 @app.post("/translate_free")
-async def translate_free(
-    req: TranslateRequest,
-    x_internal_api_key: str = Header(default=None)
-):
-    if x_internal_api_key != internal_api_key:
-        raise HTTPException(status_code=403, detail="Forbidden: Invalid API Key")
+async def translate_free(req: TranslateRequest):
     return perform_translation(req, model="gpt-3.5-turbo")
 
-# Pro version (GPT-4o)
+# Pro version using GPT-4o
 @app.post("/translate_pro")
-async def translate_pro(
-    req: TranslateRequest,
-    x_internal_api_key: str = Header(default=None)
-):
-    if x_internal_api_key != internal_api_key:
-        raise HTTPException(status_code=403, detail="Forbidden: Invalid API Key")
+async def translate_pro(req: TranslateRequest):
     return perform_translation(req, model="gpt-4o")
+
+# RapidAPI authentication middleware
+class RapidAPIAuthMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        expected = os.getenv("RAPIDAPI_SECRET")
+        actual = request.headers.get("X-RapidAPI-Proxy-Secret")
+        if actual != expected:
+            return JSONResponse(status_code=403, content={"detail": "Forbidden: Invalid RapidAPI proxy secret"})
+        return await call_next(request)
+
+# Attach middleware
+app.add_middleware(RapidAPIAuthMiddleware)
