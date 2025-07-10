@@ -7,31 +7,31 @@ Auto Translator API is a simple yet powerful API service designed to automatical
 With a single API call, you can submit a string of text, specify the source and target languages, and receive a fluent and context-aware translation — powered by GPT-3.5 or GPT-4 (in the future). The API is lightweight, fast, and easy to integrate into any client, frontend, or backend system.
 
 ### 🎯 Use Cases  
-  &emsp;- Game localization (EN → ZH / JP → EN / etc.)  
-  &emsp;- Batch subtitle translation  
-  &emsp;- Chat bot or NPC dialogue translation  
-  &emsp;- E-commerce content translation  
-  &emsp;- Mobile apps and browser extensions  
+  - Game localization (EN → ZH / JP → EN / etc.)  
+  - Batch subtitle translation  
+  - Chat bot or NPC dialogue translation  
+  - E-commerce content translation  
+  - Mobile apps and browser extensions  
 
 ### 🛠️ Features  
-  &emsp;✅ Simple POST /translate endpoint  
-  &emsp;🌐 Supports any language-to-language translation  
-  &emsp;⚡ Fast and lightweight: powered by OpenAI GPT API  
-  &emsp;📦 JSON-based input and output  
-  &emsp;🔒 Secure key-based access (API key via environment)  
+  - Simple POST /translate endpoint  
+  - Supports any language-to-language translation  
+  - Fast and lightweight: powered by OpenAI GPT API  
+  - JSON-based input and output  
+  - Secure key-based access (API key via environment)  
 
 ### 📌 Endpoints  
-  &emsp;- GET /health – Check if the service and OpenAI backend are alive  
-  &emsp;- POST /translate_free – Free translation using GPT-3.5  
-  &emsp;- POST /translate_pro – Pro translation using GPT-4o  
-  &emsp;- POST /translate_batch_free – Batch translation using GPT-3.5  
-  &emsp;- POST /translate_batch_pro – Batch translation using GPT-4o  
-  &emsp;- POST /detect_language – Auto-detect source language  
-  &emsp;- POST /glossary – Create custom terminology glossary  
-  &emsp;- GET /glossary – List all glossaries  
-  &emsp;- GET /glossary/{id} – Get specific glossary  
-  &emsp;- GET /translation_memory/stats – Get memory statistics  
-  &emsp;- DELETE /translation_memory/clear – Clear translation memory  
+  - GET /health – Check if the service and OpenAI backend are alive  
+  - POST /translate_free – Free translation using GPT-3.5  
+  - POST /translate_pro – Pro translation using GPT-4o  
+  - POST /translate_batch_free – Batch translation using GPT-3.5  
+  - POST /translate_batch_pro – Batch translation using GPT-4o  
+  - POST /detect_language – Auto-detect source language  
+  - POST /glossary – Create custom terminology glossary  
+  - GET /glossary – List all glossaries  
+  - GET /glossary/{id} – Get specific glossary  
+  - GET /translation_memory/stats – Get memory statistics  
+  - DELETE /translation_memory/clear – Clear translation memory  
 
 
 ## New Features
