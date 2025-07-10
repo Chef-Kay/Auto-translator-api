@@ -2,3 +2,5 @@
 .env
 __pycache__/
 env/
+glossaries.json
+test_api.py
