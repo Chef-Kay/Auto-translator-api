@@ -4,3 +4,6 @@ __pycache__/
 env/
 glossaries.json
 test_api.py
+batch_example.py
+memory_example.py
+translation_memory.json
