@@ -6,21 +6,21 @@ Auto Translator API is a simple yet powerful API service designed to automatical
 
 With a single API call, you can submit a string of text, specify the source and target languages, and receive a fluent and context-aware translation — powered by GPT-3.5 or GPT-4 (in the future). The API is lightweight, fast, and easy to integrate into any client, frontend, or backend system.
 
-###🎯 Use Cases  
+### 🎯 Use Cases  
   &emsp;- Game localization (EN → ZH / JP → EN / etc.)  
   &emsp;- Batch subtitle translation  
   &emsp;- Chat bot or NPC dialogue translation  
   &emsp;- E-commerce content translation  
   &emsp;- Mobile apps and browser extensions  
 
-###🛠️ Features  
+### 🛠️ Features  
   &emsp;✅ Simple POST /translate endpoint  
   &emsp;🌐 Supports any language-to-language translation  
   &emsp;⚡ Fast and lightweight: powered by OpenAI GPT API  
   &emsp;📦 JSON-based input and output  
   &emsp;🔒 Secure key-based access (API key via environment)  
 
-###📌 Endpoints  
+### 📌 Endpoints  
   &emsp;- GET /health – Check if the service and OpenAI backend are alive  
   &emsp;- POST /translate_free – Free translation using GPT-3.5  
   &emsp;- POST /translate_pro – Pro translation using GPT-4o  
